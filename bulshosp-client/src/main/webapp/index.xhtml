@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Булхосп | Система за болнична администрация</title>
+</h:head>
+<h:body>
+	<b:navBar brand="Булхосп" brandHref="#" inverse="true">
+		<b:navbarLinks>
+			<b:navLink value="Прием" href="#"></b:navLink>
+			<b:navLink value="Изписване" href="#"></b:navLink>
+			<b:navLink value="Трансфер" href="#"></b:navLink>
+			<b:navLink value="Справки" href="#"></b:navLink>
+			<b:navLink value="Картони" href="#"></b:navLink>
+		</b:navbarLinks>
+	</b:navBar>
+
+	<h:form id="form">
+		<p:dataGrid var="patient" value="#{PatientBean.patientsList}"
+			columns="3" layout="grid" rows="12" paginator="true" id="cars"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="6,12,16">
+
+			<f:facet name="header">
+           	 Приети пациенти
+      	 	</f:facet>
+
+			<p:panel header="#{patient.patientFullname()}"
+				style="text-align:center">
+				<h:panelGrid columns="1" style="width:100%">
+					<p:graphicImage name="/gfx/#{patient.status}.png" />
+					<h:outputText value="Състояние: #{patient.statusAsString()}" />
+					<h:outputText value="#{patient.firstname}" />
+					<h:outputText value="#{patient.firstname}" />
+					<h:outputText value="#{patient.family}" />
+					<p:commandLink update=":form:carDetail"
+						oncomplete="PF('carDialog').show()" title="View Detail">
+						<h:outputText styleClass="ui-icon ui-icon-search"
+							style="margin:0 auto;" />
+						<f:setPropertyActionListener value="#{patient}"
+							target="#{PatientBean.selectedPatient}" />
+					</p:commandLink>
+				</h:panelGrid>
+			</p:panel>
+
+		</p:dataGrid>
+
+		<p:dialog header="Test" widgetVar="carDialog" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
+			<p:outputPanel id="carDetail" style="text-align:center;">
+				<p:panelGrid columns="2"
+					rendered="#{not empty PatientBean.selectedPatient}">
+					<h:outputText value="Име:" />
+					<h:outputText value="#{PatientBean.selectedPatient.firstname}" />
+					<h:outputText value="Фамилия:" />
+					<h:outputText value="#{PatientBean.selectedPatient.family}" />
+					<h:outputText value="Диагноза:" />
+					<h:outputText value="#{PatientBean.selectedPatient.diagnose}" />
+				</p:panelGrid>
+				<p:accordionPanel activeIndex="-1">
+					<p:tab title="Лични данни">
+
+						<p:panelGrid columns="2" cellpadding="10"
+							style="text-align:left;border:none;">
+							<h:outputText value="Име:" />
+							<h:outputText value="#{PatientBean.selectedPatient.firstname}" />
+							<h:outputText value="Фамилия:" />
+							<h:outputText value="#{PatientBean.selectedPatient.family}" />
+							<h:outputText value="ЕГН:" />
+							<h:outputText value="8902186360" />
+							<h:outputText value="Адрес:" />
+							<h:outputText value="Sofia Ring Mall ulitsa Okolovrasten pat 214"
+								style="align:left" />
+							<h:outputText value="Телефон:" />
+							<h:outputText value="+359899461292" />
+							<h:outputText value="Ел.поща:" />
+							<h:outputText value="az@ti.com" />
+							<h:outputText value="Има още..." />
+							<h:outputText value="Има още..." />
+							<b:button value="Обнови" look="info" />
+						</p:panelGrid>
+
+					</p:tab>
+					<p:tab title="Проведено лечение - История">
+						<p:panelGrid columns="2" cellpadding="10"
+							style="text-align:left;border:none;">
+							<h:outputText value="Приет:" />
+							<h:outputText value="01/01/2014 23:10" />
+							<h:outputText value="Изписан:" />
+							<h:outputText value="--" />
+							<h:outputText value="Диагноза:" />
+							<h:outputText value="#{PatientBean.selectedPatient.diagnose}" />
+							<h:outputText value="Легло:" />
+							<h:outputText value="А1" />
+							<h:outputText value="Отделение:" />
+							<h:outputText value="Интензивно" />
+
+						</p:panelGrid>
+						<br />
+						<p:dataTable var="event"
+							value="#{PatientBean.selectedPatient.patientEvents}">
+							<p:column>
+								<h:outputText value="#{event.eventReadableType()}" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{event.text}" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{event.eventFormattedDate()}" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{event.notes}" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+
+				</p:accordionPanel>
+			</p:outputPanel>
+		</p:dialog>
+	</h:form>
+
+
+</h:body>
+</html>
+
+
+<!-- <p:dataTable var="car" value="#{dtBasicView.cars}">
+    <p:column headerText="Id">
+        <h:outputText value="#{car.id}" />
+    </p:column>
+ 
+    <p:column headerText="Year (p3)" priority="3">
+        <h:outputText value="#{car.year}" />
+    </p:column>
+ 
+    <p:column headerText="Brand (p2)" priority="2">
+        <h:outputText value="#{car.brand}" />
+    </p:column>
+ 
+    <p:column headerText="Color (p4)" priority="4">
+        <h:outputText value="#{car.color}" />
+    </p:column>
+</p:dataTable> -->
+
